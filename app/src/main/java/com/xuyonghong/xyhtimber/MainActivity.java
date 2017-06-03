@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.xuyonghong.xyhtimber.fragment.MediaLibraryFragment;
 import com.xuyonghong.xyhtimber.util.CommonUtils;
 
 import butterknife.BindView;
@@ -34,6 +37,14 @@ public class MainActivity extends AppCompatActivity
                 CommonUtils.dip2px(
                         this, getResources().getDimension(R.dimen.bottom_sheet_peek_view_height)));
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        // add the default media library fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MediaLibraryFragment libFragment = new MediaLibraryFragment();
+        fragmentTransaction.replace(
+                R.id.fragment_container, libFragment, MediaLibraryFragment.class.getSimpleName());
+        fragmentTransaction.commit();
 
 
     }
