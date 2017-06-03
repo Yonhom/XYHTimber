@@ -6,48 +6,81 @@
     android:layout_height="match_parent"
     tools:context="com.xuyonghong.xyhtimber.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <!-- this is the main activity's fragment container -->
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/main_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:layout_scrollFlags="scroll|enterAlways"/>
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/main_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <include layout="@layout/content_main" />
+        </android.support.design.widget.AppBarLayout>
+
+        <include layout="@layout/content_main" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
 
     <!-- a persistent bottom sheet's parent has to be the CoordinatorLayout -->
     <android.support.constraint.ConstraintLayout
         android:id="@+id/persistent_bottom_sheet"
+        android:elevation="5dp"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@android:color/holo_green_light"
+        android:layout_height="@dimen/bottom_sheet_height"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-        <TextView
-            android:layout_width="368dp"
-            android:layout_height="284dp"
-            android:text="I am sorry!"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
+        <FrameLayout
+            android:id="@+id/media_panel_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/media_panel_handle">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/media_panel_handle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_peek_view_height"
+            android:background="@color/purple_transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="0dp"
+                android:text="I am sorry!"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/media_panel_small" />
+        </FrameLayout>
+
 
     </android.support.constraint.ConstraintLayout>
 

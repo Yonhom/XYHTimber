@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.xuyonghong.xyhtimber.adapter.MainContentFragmentPagerAdapter;
+import com.xuyonghong.xyhtimber.util.CommonUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,8 +51,8 @@ public class MainActivity extends AppCompatActivity
         // is popped up, it will move up accordingly
         final BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior
                 = BottomSheetBehavior.from(persistentBottomSheet);
-//        bottomSheetBehavior.setHideable(true);
-        bottomSheetBehavior.setPeekHeight(200);
+        bottomSheetBehavior.setPeekHeight(CommonUtils.dip2px(
+                this, getResources().getDimension(R.dimen.bottom_sheet_peek_view_height)));
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // navigation drawer
