@@ -1,9 +1,9 @@
 package com.xuyonghong.xyhtimber;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.xuyonghong.xyhtimber.adapter.MainContentFragmentPagerAdapter;
 
@@ -23,8 +22,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -35,6 +32,9 @@ public class MainActivity extends AppCompatActivity
     TabLayout mainTabs;
     @BindView(R.id.content_view_pager)
     ViewPager contentPager;
+
+    @BindView(R.id.persistent_bottom_sheet)
+    ConstraintLayout persistentBottomSheet;
 
 
     @Override
@@ -48,18 +48,11 @@ public class MainActivity extends AppCompatActivity
 
         // fab: fab has a default behavior to deal with the snackbar's intrusion. when the snackbar
         // is popped up, it will move up accordingly
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // TODO: things to be done when the snack bar's action btn is clicked
-                            }
-                        }).show();
-            }
-        });
+        final BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior
+                = BottomSheetBehavior.from(persistentBottomSheet);
+//        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setPeekHeight(200);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // navigation drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -75,6 +68,7 @@ public class MainActivity extends AppCompatActivity
                 new MainContentFragmentPagerAdapter(getSupportFragmentManager()));
         // associate the tab layout with the view pager
         mainTabs.setupWithViewPager(contentPager);
+
     }
 
     @Override
