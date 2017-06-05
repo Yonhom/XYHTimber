@@ -27,8 +27,8 @@ import butterknife.ButterKnife;
  * Created by xuyonghong on 2017/6/2.
  */
 
-public class SongListRecyclerViewAdapter
-        extends RecyclerView.Adapter<SongListRecyclerViewAdapter.SongListViewHolder> {
+public class SongAdapter
+        extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
     /**
      * the array list for storing all the song info in the library
      */
@@ -67,7 +67,7 @@ public class SongListRecyclerViewAdapter
         }
     };
 
-    public SongListRecyclerViewAdapter(Context context) {
+    public SongAdapter(Context context) {
         // get all the song info in the media lib
         songs = MediaManager.getInstance(context).getMediaList();
 
@@ -84,14 +84,14 @@ public class SongListRecyclerViewAdapter
     }
 
     @Override
-    public SongListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.song_item_flat_view, parent, false);
-        return new SongListViewHolder(view);
+                .inflate(R.layout.item_song_flat_view, parent, false);
+        return new SongViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(SongListViewHolder holder, final int position) {
+    public void onBindViewHolder(SongViewHolder holder, final int position) {
         holder.songTitle.setText(songs.get(position).getTitle());
         holder.artistName.setText(songs.get(position).getArtist());
 
@@ -111,7 +111,7 @@ public class SongListRecyclerViewAdapter
         return songs.size();
     }
 
-    static class SongListViewHolder extends RecyclerView.ViewHolder {
+    static class SongViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.song_art)
         ImageView songArt;
         @BindView(R.id.song_title)
@@ -121,7 +121,7 @@ public class SongListRecyclerViewAdapter
 
         View view;
 
-        public SongListViewHolder(View itemView) {
+        public SongViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             view = itemView;

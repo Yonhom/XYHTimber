@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xuyonghong.xyhtimber.R;
-import com.xuyonghong.xyhtimber.adapter.MainContentFragmentPagerAdapter;
+import com.xuyonghong.xyhtimber.adapter.LibraryPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,8 +51,13 @@ public class MediaLibraryFragment extends Fragment {
         // TODO: manipulate navigation drawer open/close from fragment
 
         // populate the lib content view pager
-        libViewPager.setAdapter(new MainContentFragmentPagerAdapter(getActivity().getSupportFragmentManager()));
+        LibraryPagerAdapter adapter =
+                new LibraryPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter.addFragment(new SongFragment(), "歌曲");
+        adapter.addFragment(new AlbumFragment(), "专辑");
+        adapter.addFragment(new ArtistFragment(), "艺术家");
 
+        libViewPager.setAdapter(adapter);
         // set up the tablayout with view pager
         mainTabs.setupWithViewPager(libViewPager);
 
