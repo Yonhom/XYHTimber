@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xuyonghong.xyhtimber.R;
+import com.xuyonghong.xyhtimber.adapter.MainContentFragmentPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +29,9 @@ public class MediaLibraryFragment extends Fragment {
 
     @BindView(R.id.main_tabs)
     TabLayout mainTabs;
+
+    @BindView(R.id.content_view_pager)
+    ViewPager libViewPager;
 
     @Nullable
     @Override
@@ -45,6 +50,11 @@ public class MediaLibraryFragment extends Fragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
         // TODO: manipulate navigation drawer open/close from fragment
 
+        // populate the lib content view pager
+        libViewPager.setAdapter(new MainContentFragmentPagerAdapter(getActivity().getSupportFragmentManager()));
+
+        // set up the tablayout with view pager
+        mainTabs.setupWithViewPager(libViewPager);
 
         return view;
     }

@@ -17,11 +17,18 @@ public class MainContentFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new SongFragment();
+        SongFragment songFragment = new SongFragment();
+        return songFragment;
     }
+
 
     @Override
     public int getCount() {
         return 3;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return "Song";
     }
 }
