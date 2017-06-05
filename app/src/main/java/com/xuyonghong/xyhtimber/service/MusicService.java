@@ -1,16 +1,21 @@
 package com.xuyonghong.xyhtimber.service;
 
 import android.app.Service;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.xuyonghong.xyhtimber.model.Song;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -20,6 +25,7 @@ import java.util.List;
 public class MusicService extends Service
         implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener{
+    private static final String TAG = MusicService.class.getSimpleName();
 
     private MediaPlayer player;
     /**
@@ -30,6 +36,12 @@ public class MusicService extends Service
      * the position od the current playing song
      */
     private int currentSongPosition;
+
+    /**
+     * the music binder as a communication channel between fragment
+     * and this service
+     */
+    private IBinder binder = new MusicBinder();
 
     @Override
     public void onCreate() {
@@ -57,10 +69,24 @@ public class MusicService extends Service
         songs = songList;
     }
 
+    /**
+     * 2. after the bindService method is called in the SongFragment,
+     * this method is called to return a binder as a communication channel
+     * between the service and SongFragment
+     * @param intent
+     * @return
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        player.stop();
+        player.release();
+        return false;
     }
 
     /**
@@ -71,10 +97,41 @@ public class MusicService extends Service
         /**
          * @return the current service instance
          */
-        MusicService getService() {
+        public MusicService getService() {
             return MusicService.this;
         }
 
+    }
+
+//    -------------------method in this service to manipulate the media player-------------------
+
+    public void playSong() {
+        player.reset();
+        // get a song info
+        Song playingSong = songs.get(currentSongPosition);
+        // get the song's id for look up the media lib
+        long songId = playingSong.getSongId();
+        // the playing song's uri
+        Uri songUri = ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId);
+        try {
+            player.setDataSource(getApplicationContext(), songUri);
+        } catch (IOException e) {
+            Log.e(TAG, "Error setting data source for media player");
+        }
+
+        // when the player is prepared, the onPrepared() callback is called
+        // we can start playing music there
+        player.prepareAsync();
+    }
+
+    /**
+     * this method is for the song fragment to select a song
+     * with designated song index
+     * @param songIndex
+     */
+    public void setSong(int songIndex) {
+        currentSongPosition = songIndex;
     }
 
 //    -----------------call backs for media player-------------------------
@@ -91,6 +148,7 @@ public class MusicService extends Service
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-
+        // start the playback
+        player.start();
     }
 }
