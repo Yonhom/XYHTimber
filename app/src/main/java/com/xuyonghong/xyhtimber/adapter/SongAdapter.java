@@ -40,6 +40,10 @@ public class SongAdapter
 
     private boolean musicServiceBound;
 
+    private Context context;
+
+    public static final String ALBUM_PATH = "content://media/external/audio/albumart";
+
     /**
      interface callbacks for the service that is connected/disconnected from
      activity/fragment
@@ -68,8 +72,9 @@ public class SongAdapter
     };
 
     public SongAdapter(Context context) {
+        this.context = context;
         // get all the song info in the media lib
-        songs = MediaManager.getInstance(context).getMediaList();
+        songs = MediaManager.getInstance(context).getSongList();
 
         // start the music service when the fragment is started
         if (playIntent == null) {
@@ -94,6 +99,11 @@ public class SongAdapter
     public void onBindViewHolder(SongViewHolder holder, final int position) {
         holder.songTitle.setText(songs.get(position).getTitle());
         holder.artistName.setText(songs.get(position).getArtist());
+        // get the art image with art id;
+        holder.songArt.setImageBitmap(
+                MediaManager.getInstance(context)
+                        .getArtImageBitmapWithId(
+                                ALBUM_PATH, songs.get(position).getAlbumId()));
 
         // set a onclick listener for the view this viewholder holds
         // play the specified song in the specified position

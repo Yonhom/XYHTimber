@@ -8,11 +8,17 @@ public class Song {
     private String title;
     private String artist;
     private long songId;
+    /**
+     * album id for constructing album art uri, which is used for loading
+     * local album image from local media library
+     */
+    private long albumId;
 
-    public Song(String title, String artist, long songId) {
+    public Song(String title, String artist, long songId, long albumId) {
         this.title = title;
         this.artist = artist;
         this.songId = songId;
+        this.albumId = albumId;
     }
 
     public String getTitle() {
@@ -25,5 +31,9 @@ public class Song {
 
     public long getSongId() {
         return songId;
+    }
+
+    public long getAlbumId() {
+        return albumId;
     }
 }
