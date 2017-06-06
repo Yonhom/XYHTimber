@@ -53,6 +53,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.artistName.setText(albums.get(position).getArtist());
         holder.albumName.setText(albums.get(position).getAlbum());
 
+        holder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: do something when the album item is clicked
+            }
+        });
+
     }
 
     @Override
@@ -68,9 +75,20 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         @BindView(R.id.artist_name_count_desc)
         TextView artistName;
 
+        /**
+         * this view represent a clickable item,
+         * it is returned to handle click event
+         */
+        private View view;
+
         public AlbumViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            view = itemView;
+        }
+
+        public View getView() {
+            return view;
         }
     }
 }

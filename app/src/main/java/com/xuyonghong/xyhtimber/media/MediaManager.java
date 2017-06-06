@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.xuyonghong.xyhtimber.model.Album;
+import com.xuyonghong.xyhtimber.model.Artist;
 import com.xuyonghong.xyhtimber.model.Song;
 
 import java.io.IOException;
@@ -78,6 +79,10 @@ public class MediaManager {
         return songs;
     }
 
+    /**
+     * get the album list in the system's external storage media library
+     * @return
+     */
     public List<Album> getAlbumList() {
         List<Album> albums = new ArrayList<>();
 
@@ -107,6 +112,42 @@ public class MediaManager {
         }
 
         return albums;
+    }
+
+    /**
+     * return the data for the artist page
+     * @return
+     */
+    public List<Artist> getArtistList() {
+        List<Artist> artists = new ArrayList<>();
+
+        Cursor cursor = getCursorForPath(MediaPath.ARTIST_PATH);
+        if (cursor != null && cursor.moveToFirst()) {
+
+            // get the column name that we need
+            int artistNameIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
+            int artistKeyIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY);
+            int albumCountIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
+            int trackCountIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
+
+            do {
+                String name = cursor.getString(artistNameIndex);
+                // TODO: get the artist's image, the line below is not work!!
+                String artistArt = cursor.getString(artistKeyIndex);
+                long albumCount = cursor.getLong(albumCountIndex);
+                long trackCount = cursor.getLong(trackCountIndex);
+
+                Artist artist = new Artist(albumCount, trackCount, artistArt, name);
+                // add the artist in list
+                artists.add(artist);
+
+            } while (cursor.moveToNext());
+
+            // close the cursor
+            cursor.close();
+        }
+
+        return artists;
     }
 
     /**
