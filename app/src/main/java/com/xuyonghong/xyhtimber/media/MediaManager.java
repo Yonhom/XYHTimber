@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.xuyonghong.xyhtimber.model.Album;
 import com.xuyonghong.xyhtimber.model.Song;
 
 import java.io.IOException;
@@ -32,27 +33,36 @@ public class MediaManager {
     }
 
     /**
+     * return the song cursor from the media library, which contains
+     * as much as data we need
+     * @return
+     */
+    public Cursor getCursorForPath(Uri path) {
+        ContentResolver contentResolver = context.getContentResolver();
+        // cursor containing the song list
+        Cursor cursor = contentResolver.query(path, null, null, null, null);
+        return cursor;
+    }
+
+    /**
      * get a media list, in this case: a song list
      * @return
      */
     public List<Song> getSongList() {
         List<Song> songs = new ArrayList<>();
-        ContentResolver contentResolver = context.getContentResolver();
-        // song path
-        Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        // cursor containing the song list
-        Cursor cursor = contentResolver.query(songUri, null, null, null, null);
+
+        Cursor cursor = getCursorForPath(MediaPath.SONG_PATH);
         if (cursor != null && cursor.moveToFirst()) {
             // get the column name that we need
-            int titleIndex = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int artistIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int idIndex = cursor.getColumnIndex(MediaStore.Audio.Media._ID);
-            int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+            int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
+            int artistIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);
+            int idIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns._ID);
+            int albumIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
             do {
                 String title = cursor.getString(titleIndex);
                 String artist = cursor.getString(artistIndex);
                 long songId = cursor.getLong(idIndex);
-                long albumID = cursor.getLong(albumIndex);
+                long albumID = cursor.getLong(albumIdIndex);
 
                 // create a song instance for each data in the cursor
                 Song song = new Song(title, artist, songId, albumID);
@@ -66,6 +76,37 @@ public class MediaManager {
         }
 
         return songs;
+    }
+
+    public List<Album> getAlbumList() {
+        List<Album> albums = new ArrayList<>();
+
+        Cursor cursor = getCursorForPath(MediaPath.ALBUM_PATH);
+        if (cursor != null && cursor.moveToFirst()) {
+
+            // get the column name that we need
+            int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM);
+            int artistIndex = cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST);
+            // the column index of the album art's absolute path
+            int albumArtIndex = cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART);
+            do {
+                String title = cursor.getString(titleIndex);
+                String artist = cursor.getString(artistIndex);
+                //  the art's absolute path
+                String albumArt = cursor.getString(albumArtIndex);
+
+                // create a song instance for each data in the cursor
+                Album song = new Album(title, artist, albumArt);
+                // add the song in list
+                albums.add(song);
+
+            } while (cursor.moveToNext());
+
+            // close the cursor
+            cursor.close();
+        }
+
+        return albums;
     }
 
     /**
