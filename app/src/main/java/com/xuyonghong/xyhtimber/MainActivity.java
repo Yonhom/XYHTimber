@@ -120,4 +120,11 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // connection is created in adapter, which is a bed design
+//        unbindService(conn);
+    }
 }

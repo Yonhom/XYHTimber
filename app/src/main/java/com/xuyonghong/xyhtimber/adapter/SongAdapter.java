@@ -145,4 +145,6 @@ public class SongAdapter
             return view;
         }
     }
+
+
 }

@@ -33,6 +33,8 @@ public class MediaLibraryFragment extends Fragment {
     @BindView(R.id.content_view_pager)
     ViewPager libViewPager;
 
+    private LibraryPagerAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,8 +53,7 @@ public class MediaLibraryFragment extends Fragment {
         // TODO: manipulate navigation drawer open/close from fragment
 
         // populate the lib content view pager
-        LibraryPagerAdapter adapter =
-                new LibraryPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter = new LibraryPagerAdapter(getActivity().getSupportFragmentManager());
         adapter.addFragment(new SongFragment(), "歌曲");
         adapter.addFragment(new AlbumFragment(), "专辑");
         adapter.addFragment(new ArtistFragment(), "艺术家");

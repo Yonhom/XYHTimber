@@ -27,7 +27,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     private List<Album> albums;
 
-    public static final String ALBUM_PATH = "content://media/external/audio/albumart";
+    /**
+     * this part of the functionality can not be determined in this class,
+     * so the listener is instantiated by the delegate
+     */
+    private OnAlbumItemClickedListener albumItemClickedListener;
+
+    public void setAlbumItemClickedListener(OnAlbumItemClickedListener albumItemClickedListener) {
+        this.albumItemClickedListener = albumItemClickedListener;
+    }
 
     public AlbumAdapter(Context context) {
         this.context = context;
@@ -45,7 +53,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     }
 
     @Override
-    public void onBindViewHolder(AlbumViewHolder holder, int position) {
+    public void onBindViewHolder(AlbumViewHolder holder, final int position) {
 
         // set the album art image
         holder.albumImage.setImageBitmap(BitmapFactory.decodeFile(albums.get(position).getAlnumArt()));
@@ -56,10 +64,21 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: do something when the album item is clicked
+                // load the album detail fragment
+                if (albumItemClickedListener != null)
+                    // giving the click action to the listeners delegate
+                    albumItemClickedListener.onAlbumItemClicked(albums.get(position));
             }
         });
 
+    }
+
+    /**
+     * this callback is for delegate to handle event after the item in the current
+     * fragment is clicked
+     */
+    public interface OnAlbumItemClickedListener {
+        void onAlbumItemClicked(Album album);
     }
 
     @Override
