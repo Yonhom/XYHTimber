@@ -47,12 +47,18 @@ public class MediaManager {
 
     /**
      * get a media list, in this case: a song list
+     * @parameter if album is null, get the whole list, otherwise get the specified album's song list
      * @return
      */
-    public List<Song> getSongList() {
+    public List<Song> getSongList(String albumId) {
         List<Song> songs = new ArrayList<>();
 
-        Cursor cursor = getCursorForPath(MediaPath.SONG_PATH);
+        Cursor cursor;
+        if (albumId == null)
+            cursor = getCursorForPath(MediaPath.SONG_PATH);
+        else
+            cursor = getCursorForPath(Uri.withAppendedPath(MediaPath.ALBUM_PATH, albumId));
+
         if (cursor != null && cursor.moveToFirst()) {
             // get the column name that we need
             int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);

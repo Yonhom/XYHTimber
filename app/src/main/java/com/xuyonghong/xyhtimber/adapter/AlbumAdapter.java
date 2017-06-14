@@ -1,8 +1,12 @@
 package com.xuyonghong.xyhtimber.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xuyonghong.xyhtimber.R;
+import com.xuyonghong.xyhtimber.fragment.AlbumDetailFragment;
 import com.xuyonghong.xyhtimber.media.MediaManager;
 import com.xuyonghong.xyhtimber.model.Album;
+import com.xuyonghong.xyhtimber.transition.DetailTransition;
 
 import java.util.List;
 
@@ -26,16 +32,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     private Context context;
 
     private List<Album> albums;
-
-    /**
-     * this part of the functionality can not be determined in this class,
-     * so the listener is instantiated by the delegate
-     */
-    private OnAlbumItemClickedListener albumItemClickedListener;
-
-    public void setAlbumItemClickedListener(OnAlbumItemClickedListener albumItemClickedListener) {
-        this.albumItemClickedListener = albumItemClickedListener;
-    }
 
     public AlbumAdapter(Context context) {
         this.context = context;
@@ -57,28 +53,12 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
         // set the album art image
         holder.albumImage.setImageBitmap(BitmapFactory.decodeFile(albums.get(position).getAlnumArt()));
-
         holder.artistName.setText(albums.get(position).getArtist());
         holder.albumName.setText(albums.get(position).getAlbum());
 
-        holder.getView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // load the album detail fragment
-                if (albumItemClickedListener != null)
-                    // giving the click action to the listeners delegate
-                    albumItemClickedListener.onAlbumItemClicked(albums.get(position));
-            }
-        });
+        // set transition name for for the shared element
+        ViewCompat.setTransitionName(holder.albumImage, "image_" + position);
 
-    }
-
-    /**
-     * this callback is for delegate to handle event after the item in the current
-     * fragment is clicked
-     */
-    public interface OnAlbumItemClickedListener {
-        void onAlbumItemClicked(Album album);
     }
 
     @Override
@@ -86,7 +66,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         return albums.size();
     }
 
-    static class AlbumViewHolder extends RecyclerView.ViewHolder {
+    class AlbumViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.album_artist_image)
         ImageView albumImage;
         @BindView(R.id.album_name_artist_name)
@@ -95,19 +75,36 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         TextView artistName;
 
         /**
-         * this view represent a clickable item,
-         * it is returned to handle click event
+         *
+         * @param itemView the itemView is the view that should handle a click event to open the
+         *                 album detail page
          */
-        private View view;
-
         public AlbumViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            view = itemView;
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // translate to the detail fragment with a album image view transition animation
+                    AlbumDetailFragment adFragment = AlbumDetailFragment.newInstance(0);
+
+                    // the transition to use for shared view
+                    adFragment.setSharedElementEnterTransition(new DetailTransition());
+                    adFragment.setEnterTransition(new Fade());
+                    ((Activity)context).getWindow().setExitTransition(new Fade());
+                    adFragment.setSharedElementReturnTransition(new DetailTransition());
+
+                    ((AppCompatActivity) context).getSupportFragmentManager()
+                            .beginTransaction()
+                            .addSharedElement(albumImage, "detailImage")
+                            .add(R.id.fragment_container, adFragment)
+                            .addToBackStack(null)
+                            .commit();
+
+                }
+            });
         }
 
-        public View getView() {
-            return view;
-        }
     }
 }

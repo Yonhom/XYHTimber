@@ -74,7 +74,7 @@ public class SongAdapter
     public SongAdapter(Context context) {
         this.context = context;
         // get all the song info in the media lib
-        songs = MediaManager.getInstance(context).getSongList();
+        songs = MediaManager.getInstance(context).getSongList(null);
 
         // start the music service when the fragment is started
         if (playIntent == null) {

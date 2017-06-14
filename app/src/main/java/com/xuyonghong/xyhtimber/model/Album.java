@@ -26,4 +26,5 @@ public class Album {
     public String getAlnumArt() {
         return alnumArt;
     }
+
 }
